@@ -1,0 +1,17 @@
+{
+  "name": "生成AIパスポート 対策ドリル",
+  "short_name": "AIパス対策",
+  "description": "生成AIパスポート試験のシラバスに沿った対策ドリル。オフラインで使えます。",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#241C14",
+  "theme_color": "#241C14",
+  "lang": "ja",
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
