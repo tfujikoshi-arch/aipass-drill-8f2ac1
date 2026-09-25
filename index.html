@@ -212,10 +212,10 @@ button{font-family:inherit}
     <!-- お試し版のときだけ出る案内 -->
     <div id="trialBox" class="card trial hide">
       <b>これはお試し版です</b>
-      <p>収録は20問。製品版では<b>全70問</b>に加えて、
+      <p>収録は20問。完全版では<b>全70問</b>に加えて、
       本番と同じ<b>60問・60分の「本番形式」</b>が使えます。
       問題はこれからも増えていきます。</p>
-      <a id="trialLink" class="trial-btn hide" target="_blank" rel="noopener">製品版について見る</a>
+      <a id="trialLink" class="trial-btn hide" target="_blank" rel="noopener">完全版の案内を見る</a>
     </div>
 
     <button id="reset" class="primary ghost">成績をリセット</button>
@@ -309,7 +309,7 @@ function show(name) {
 
 /* ---------- 版による出し分け ----------
    EDITION は questions.js で "trial"、questions_full.js が読み込まれると "full"。
-   つまり、お試し版と製品版の違いは問題データのファイルだけで決まります。
+   つまり、お試し版と完全版の違いは問題データのファイルだけで決まります。
    --------------------------------------------------------------------- */
 var IS_TRIAL   = (typeof EDITION === "undefined" || EDITION !== "full");
 var HOME_TITLE = IS_TRIAL
@@ -319,7 +319,7 @@ var HOME_TITLE = IS_TRIAL
 function applyEdition() {
   if (!IS_TRIAL) { return; }
   document.title = "生成AIパスポート 対策ドリル（お試し版）";
-  $("mExam").classList.add("hide");          // 本番形式は製品版だけ
+  $("mExam").classList.add("hide");          // 本番形式は完全版だけ
   $("trialBox").classList.remove("hide");
   if (typeof TRIAL_NOTE_URL === "string" && TRIAL_NOTE_URL !== "") {
     $("trialLink").href = TRIAL_NOTE_URL;
