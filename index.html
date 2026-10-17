@@ -383,6 +383,23 @@ var QUICK_N = 10;         // サクッとモードの出題数
 var queue = [], idx = 0, picked = [], locked = false, sessionLog = [];
 var mode = "study", answers = [], examEnd = 0, examStart = 0, examTimer = null;
 
+/* 選択肢は毎回シャッフルして出す。orders[idx][表示位置] = 元の選択肢番号。
+   picked / answers / q.answer はすべて「元の番号」で持つので、採点は並び順に左右されない。
+   本番形式で前後に戻っても並びが変わらないよう、問題ごとに一度だけ決める。 */
+var orders = [];
+function orderFor(q) {
+  if (!orders[idx]) { orders[idx] = shuffle(q.choices.map(function (_, i) { return i; })); }
+  return orders[idx];
+}
+/* 解説中の {2} は「元の2番目の選択肢」。いま画面に出ている記号に置き換える */
+function explainText(q) {
+  var ord = orderFor(q);
+  return q.explain.replace(/\{(\d)\}/g, function (_, n) {
+    var pos = ord.indexOf(Number(n) - 1);
+    return pos >= 0 ? LETTERS[pos] : n;
+  });
+}
+
 function start(ids, opts) {
   opts = opts || {};
   mode = opts.exam ? "exam" : "study";
@@ -391,6 +408,7 @@ function start(ids, opts) {
   idx = 0;
   sessionLog = [];
   answers = [];
+  orders = [];
   stopTimer();
   if (mode === "exam") { startTimer(EXAM_MIN); }
   show("quiz");
@@ -403,9 +421,9 @@ function currentQ() {
 
 /* 選択状態を画面に反映する（本番形式では選び直せる） */
 function paintSel() {
-  var kids = $("qChoices").children;
+  var kids = $("qChoices").children, ord = orderFor(currentQ());
   for (var i = 0; i < kids.length; i++) {
-    kids[i].classList.toggle("sel", picked.indexOf(i) >= 0);
+    kids[i].classList.toggle("sel", picked.indexOf(ord[i]) >= 0);
   }
 }
 
@@ -440,13 +458,13 @@ function renderQ() {
   }
 
   var box = $("qChoices"); box.innerHTML = "";
-  q.choices.forEach(function (txt, i) {
+  orderFor(q).forEach(function (i, pos) {
     var b = document.createElement("button");
     b.className = "ch";
     var mk = document.createElement("span");
-    mk.className = "mk"; mk.textContent = LETTERS[i];
+    mk.className = "mk"; mk.textContent = LETTERS[pos];
     var tx = document.createElement("span");
-    tx.textContent = txt;
+    tx.textContent = q.choices[i];
     b.appendChild(mk); b.appendChild(tx);
     b.onclick = function () {
       if (locked) { return; }
@@ -509,12 +527,12 @@ function grade(q) {
   var mine = picked.slice().sort().join(",");
   var hit  = (ans === mine);
 
-  var kids = $("qChoices").children;
+  var kids = $("qChoices").children, ord = orderFor(q);
   for (var i = 0; i < kids.length; i++) {
     kids[i].classList.add("locked");
     kids[i].classList.remove("sel");
-    if (q.answer.indexOf(i) >= 0) { kids[i].classList.add("ok"); }
-    else if (picked.indexOf(i) >= 0) { kids[i].classList.add("ng"); }
+    if (q.answer.indexOf(ord[i]) >= 0) { kids[i].classList.add("ok"); }
+    else if (picked.indexOf(ord[i]) >= 0) { kids[i].classList.add("ng"); }
   }
 
   record(q, hit);
@@ -523,7 +541,7 @@ function grade(q) {
   $("submit").classList.add("hide");
   $("judge").className     = "judge " + (hit ? "y" : "n");
   $("judge").textContent   = hit ? "○　正解" : "×　不正解";
-  $("explain").textContent = q.explain;
+  $("explain").textContent = explainText(q);
   $("next").textContent    = (idx === queue.length - 1) ? "結果を見る" : "次の問題へ";
   $("result").classList.remove("hide");
   $("result").scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -544,12 +562,12 @@ function grade(q) {
   var mine = picked.slice().sort().join(",");
   var hit  = (ans === mine);
 
-  var kids = $("qChoices").children;
+  var kids = $("qChoices").children, ord = orderFor(q);
   for (var i = 0; i < kids.length; i++) {
     kids[i].classList.add("locked");
     kids[i].classList.remove("sel");
-    if (q.answer.indexOf(i) >= 0) { kids[i].classList.add("ok"); }
-    else if (picked.indexOf(i) >= 0) { kids[i].classList.add("ng"); }
+    if (q.answer.indexOf(ord[i]) >= 0) { kids[i].classList.add("ok"); }
+    else if (picked.indexOf(ord[i]) >= 0) { kids[i].classList.add("ng"); }
   }
 
   var s = DB.stats[q.id] || { n: 0, c: 0, w: false };
@@ -561,7 +579,7 @@ function grade(q) {
   $("submit").classList.add("hide");
   $("judge").className     = "judge " + (hit ? "y" : "n");
   $("judge").textContent   = hit ? "○　正解" : "×　不正解";
-  $("explain").textContent = q.explain;
+  $("explain").textContent = explainText(q);
   $("next").textContent    = (idx === queue.length - 1) ? "結果を見る" : "次の問題へ";
   $("result").classList.remove("hide");
   $("result").scrollIntoView({ behavior: "smooth", block: "nearest" });
