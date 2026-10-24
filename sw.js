@@ -5,13 +5,15 @@
      これを上げないと、すでにホーム画面に追加した端末に古い版が残り続けます。
    ===================================================================== */
 
-const CACHE_VERSION = "aipass-drill-v8";
+const CACHE_VERSION = "aipass-drill-v9";
 
 const ASSETS = [
   "./",
   "./index.html",
   "./questions.js",
   "./questions_full.js",
+  "./terms.js",
+  "./terms_full.js",
   "./manifest.json",
   "./icon-192.png",
   "./icon-512.png",

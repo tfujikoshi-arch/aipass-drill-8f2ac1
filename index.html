@@ -14,8 +14,8 @@
 <!-- OGP:START ここから OGP:END までは版ごとに差し替わります（共通ファイル同期.ps1 が自動で当て直す） -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="動画おやじの道具箱">
-<meta property="og:title" content="生成AIパスポート 対策ドリル（全70問）">
-<meta property="og:description" content="シラバスに沿ったオリジナル70問。本番形式60問・60分に対応。ホーム画面に追加すれば、電波がなくても使えます。">
+<meta property="og:title" content="生成AIパスポート 対策ドリル（全70問＋単語帳356語）">
+<meta property="og:description" content="用語の意味を固める単語帳356語と、シラバスに沿ったオリジナル70問。本番形式60問・60分に対応。ホーム画面に追加すれば、電波がなくても使えます。">
 <meta property="og:url" content="https://tfujikoshi-arch.github.io/aipass-drill-8f2ac1/">
 <meta property="og:image" content="https://tfujikoshi-arch.github.io/aipass-drill-8f2ac1/ogp.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -163,6 +163,43 @@ button{font-family:inherit}
 .score .big small{font-size:22px;color:var(--sub);font-weight:500}
 .score .cm{margin-top:8px;font-size:14.5px;color:var(--sub)}
 .note{font-size:12px;color:var(--sub);line-height:1.8;margin-top:22px;padding-top:16px;border-top:1px solid var(--line)}
+
+/* 単語帳（ver.2） */
+.qtext,.exp{white-space:pre-line}
+h2 small{color:var(--gold);font-size:11px;font-weight:700;margin-left:6px;letter-spacing:.04em}
+.lead{color:var(--sub);font-size:12.5px;line-height:1.7;margin:-4px 0 12px}
+.rel{margin-top:14px}
+.rel-h{color:var(--sub);font-size:12px;font-weight:700;margin-bottom:7px}
+.kws{display:flex;flex-wrap:wrap;gap:7px}
+.kw{background:var(--card2);border:1px solid var(--line);color:var(--txt);border-radius:999px;
+  padding:5px 12px;font-size:13px;cursor:pointer;line-height:1.5}
+.kw.on{border-color:var(--gold);color:var(--gold)}
+.kwbox{margin-top:9px;background:var(--card);border:1px solid var(--line);border-radius:10px;
+  padding:11px 13px;font-size:13.5px;line-height:1.75;color:#E8DFD2;white-space:pre-line}
+.rel-note{margin-top:8px;color:var(--terra);font-size:12.5px;font-weight:700}
+.rel-go{display:block;width:100%;margin-top:10px;background:none;border:1px solid var(--gold);color:var(--gold);
+  border-radius:10px;padding:11px;font-size:14px;font-weight:700;cursor:pointer}
+
+.rc-hint{color:var(--sub);font-size:12.5px;text-align:center;margin:6px 0 0}
+.rc-word{background:var(--card);border:1px solid var(--line);border-radius:16px;
+  padding:34px 18px;text-align:center;font-size:23px;font-weight:700;line-height:1.5;margin:6px 0 4px}
+
+.gl-search{width:100%;background:var(--card);border:1px solid var(--line);border-radius:10px;
+  color:var(--txt);font-size:16px;padding:11px 13px;font-family:inherit;margin:16px 0 10px}
+.gl-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.gl-tab{background:none;border:1px solid var(--line);color:var(--sub);border-radius:999px;
+  padding:4px 11px;font-size:12.5px;cursor:pointer}
+.gl-tab.on{background:var(--gold);border-color:var(--gold);color:#241C14;font-weight:700}
+.gl-item{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px}
+.gl-item b{display:block;font-size:15px}
+.gl-item .m{font-size:13.5px;line-height:1.7;color:#E8DFD2;margin-top:3px}
+.gl-item .t{font-size:12.5px;line-height:1.65;color:var(--sub);margin-top:5px}
+.gl-foot{display:flex;align-items:center;gap:8px;margin-top:8px}
+.gl-weak{color:var(--ng);font-size:11.5px;font-weight:700}
+.gl-ok{color:var(--ok);font-size:11.5px;font-weight:700}
+.gl-q{margin-left:auto;background:none;border:1px solid var(--line);color:var(--sub);border-radius:8px;
+  padding:3px 10px;font-size:12px;cursor:pointer}
+.gl-count{color:var(--sub);font-size:12px;margin-bottom:8px}
 </style>
 </head>
 <body>
@@ -180,13 +217,59 @@ button{font-family:inherit}
 
   <!-- ========== ホーム ========== -->
   <section id="home">
+    <h2>単語帳<small>ver.2</small></h2>
+    <p class="lead">用語の意味が正しく言えないと解けない問題が多い。だから、まず単語から。
+    問題で間違えると、その問題に出てきた単語が自動で「苦手な単語」に入ります。</p>
+    <div class="stats">
+      <div class="stat"><b id="stTerms">0</b><small>収録語数</small></div>
+      <div class="stat"><b id="stKnown">0</b><small>覚えた単語</small></div>
+      <div class="stat"><b id="stTWeak">0</b><small>苦手な単語</small></div>
+    </div>
+    <button class="mode" data-mode="w-quick">
+      <span class="ic">単</span>
+      <span class="tx"><b>単語4択 10問</b><small>用語→意味、意味→用語がランダムに出ます</small></span>
+      <span class="ar">›</span>
+    </button>
+    <button class="mode" data-mode="w-recall">
+      <span class="ic">説</span>
+      <span class="tx"><b>説明できる？チェック</b><small>意味を自分の言葉で言ってから、めくって確かめる</small></span>
+      <span class="ar">›</span>
+    </button>
+    <button class="mode" id="mTWeak" data-mode="w-weak">
+      <span class="ic">苦</span>
+      <span class="tx"><b>苦手な単語だけ</b><small id="lbTWeak">まだありません</small></span>
+      <span class="ar">›</span>
+    </button>
+    <button class="mode" id="mGpt" data-mode="w-gpt">
+      <span class="ic" style="font-size:13px">GPT</span>
+      <span class="tx"><b>ChatGPTまわりの単語</b><small id="lbGpt">モデル名・機能・設定・プラン</small></span>
+      <span class="ar">›</span>
+    </button>
+    <button class="mode" id="mLearn" data-mode="w-learn">
+      <span class="ic">学</span>
+      <span class="tx"><b>学習の種類・しくみ</b><small id="lbLearn">教師あり／なし・強化学習・評価の指標</small></span>
+      <span class="ar">›</span>
+    </button>
+    <button class="mode" id="mHist" data-mode="w-hist">
+      <span class="ic">史</span>
+      <span class="tx"><b>AIの歴史・思考実験</b><small id="lbHist">チューリングテスト・中国語の部屋・3つのブーム</small></span>
+      <span class="ar">›</span>
+    </button>
+    <button class="mode" data-mode="w-list">
+      <span class="ic">一</span>
+      <span class="tx"><b>単語一覧・検索</b><small>参考書を読みながら引ける辞書として</small></span>
+      <span class="ar">›</span>
+    </button>
+
+    <h2>単語を章から選ぶ</h2>
+    <div id="tchList" class="card"></div>
+
+    <h2>問題演習</h2>
     <div class="stats">
       <div class="stat"><b id="stAll">0</b><small>のべ解答数</small></div>
       <div class="stat"><b id="stRate">–</b><small>通算 正答率</small></div>
       <div class="stat"><b id="stWeak">0</b><small>苦手な問題</small></div>
     </div>
-
-    <h2>出題モード</h2>
     <button class="mode" id="mExam" data-mode="exam">
       <span class="ic">本</span>
       <span class="tx"><b>本番形式 60問</b><small id="lbExam">60分・採点は最後にまとめて</small></span>
@@ -203,7 +286,7 @@ button{font-family:inherit}
       <span class="ar">›</span>
     </button>
 
-    <h2>章から選ぶ</h2>
+    <h2>問題を章から選ぶ</h2>
     <div id="chList" class="card"></div>
 
     <h2>いまの実力</h2>
@@ -212,9 +295,9 @@ button{font-family:inherit}
     <!-- お試し版のときだけ出る案内 -->
     <div id="trialBox" class="card trial hide">
       <b>これはお試し版です</b>
-      <p>収録は20問。完全版では<b>全70問</b>に加えて、
+      <p>収録は問題20問・単語40語。完全版では<b>全70問</b>と<b>単語300語以上</b>に加えて、
       本番と同じ<b>60問・60分の「本番形式」</b>が使えます。
-      問題はこれからも増えていきます。</p>
+      問題も単語も、これからも増えていきます。</p>
       <a id="trialLink" class="trial-btn hide" target="_blank" rel="noopener">完全版の案内を見る</a>
     </div>
 
@@ -222,7 +305,8 @@ button{font-family:inherit}
 
     <p class="note">
       収録されているのは、シラバスの章立てに沿って作成した<b>オリジナルのサンプル問題</b>です。
-      本試験の過去問は公開されていないため、再現問題は含みません。<br>
+      本試験の過去問は公開されていないため、再現問題は含みません。
+      単語の意味の説明も、すべて独自に書いたものです。<br>
       成績はこの端末の中だけに保存され、どこにも送信されません。
     </p>
   </section>
@@ -247,8 +331,38 @@ button{font-family:inherit}
     <div id="result" class="hide">
       <div class="judge" id="judge"></div>
       <div class="exp" id="explain"></div>
+      <div id="related"></div>
       <button id="next" class="primary">次の問題へ</button>
     </div>
+    <div class="spacer"></div>
+  </section>
+
+  <!-- ========== 説明できる？チェック ========== -->
+  <section id="recall" class="hide">
+    <div class="meta">
+      <span class="chip" id="rcCh">第1章</span>
+      <span class="count" id="rcCount">1 / 10</span>
+    </div>
+    <div class="rc-word" id="rcWord"></div>
+    <p class="rc-hint" id="rcHint">声に出すか頭の中で、意味を説明してからめくってください</p>
+    <button id="rcShow" class="primary">意味を見る</button>
+    <div id="rcAns" class="hide">
+      <div class="exp" id="rcMean" style="margin-top:14px"></div>
+      <div id="rcRel"></div>
+      <div class="exnav">
+        <button id="rcNg" class="exbtn">言えなかった</button>
+        <button id="rcOk" class="exbtn main">説明できた</button>
+      </div>
+    </div>
+    <div class="spacer"></div>
+  </section>
+
+  <!-- ========== 単語一覧 ========== -->
+  <section id="glossary" class="hide">
+    <input id="glQ" class="gl-search" type="search" placeholder="単語や意味で検索（例：学習、著作権）" autocomplete="off">
+    <div id="glTabs" class="gl-tabs"></div>
+    <div id="glCount" class="gl-count"></div>
+    <div id="glList"></div>
     <div class="spacer"></div>
   </section>
 
@@ -269,14 +383,17 @@ button{font-family:inherit}
 
 <script src="./questions.js"></script>
 <script src="./questions_full.js"></script>
+<script src="./terms.js"></script>
+<script src="./terms_full.js"></script>
 <script>
 "use strict";
 
 /* ---------- 成績の保存（この端末のlocalStorageのみ） ---------- */
 var KEY = "aipass_drill_v1";
-var DB = { stats: {} };          // stats[qid] = { n:出題回数, c:正解数, w:直近が不正解か }
+var DB = { stats: {}, terms: {} };   // stats[qid] / terms[tid] = { n:出題回数, c:正解数, w:直近が不正解か }
 try { DB = JSON.parse(localStorage.getItem(KEY)) || DB; } catch (e) {}
 if (!DB.stats) { DB.stats = {}; }
+if (!DB.terms) { DB.terms = {}; }    // ver.1 の成績にはこの欄がないので足す
 function save() { try { localStorage.setItem(KEY, JSON.stringify(DB)); } catch (e) {} }
 
 function $(id) { return document.getElementById(id); }
@@ -296,11 +413,12 @@ function shuffle(a) {
 
 /* ---------- 画面切り替え ---------- */
 function show(name) {
-  ["home", "quiz", "done"].forEach(function (s) {
+  ["home", "quiz", "done", "recall", "glossary"].forEach(function (s) {
     $(s).classList.toggle("hide", s !== name);
   });
-  $("back").classList.toggle("hide", name !== "quiz");
-  $("barWrap").classList.toggle("hide", name !== "quiz");
+  $("back").classList.toggle("hide", name === "home" || name === "done");
+  $("back").textContent = (name === "glossary") ? "← 戻る" : "← やめる";
+  $("barWrap").classList.toggle("hide", name !== "quiz" && name !== "recall");
   var examRunning = (name === "quiz" && mode === "exam");
   $("timer").classList.toggle("hide", !examRunning);
   $("hTitle").innerHTML = examRunning ? '本番形式 <span>60問</span>' : HOME_TITLE;
@@ -370,7 +488,276 @@ function renderHome() {
                    '<span class="p">' + (tn ? pc + "%" : "–") + '</span>';
     chs.appendChild(st);
   });
+
+  /* 単語帳 */
+  var known = 0, tweak = weakTermIds().length;
+  TERMS.forEach(function (t) { var s = DB.terms[t.id]; if (s && s.c > 0 && !s.w) { known++; } });
+  $("stTerms").textContent = TERMS.length;
+  $("stKnown").textContent = known;
+  $("stTWeak").textContent = tweak;
+  $("mTWeak").disabled     = (tweak === 0);
+  $("lbTWeak").textContent = tweak ? tweak + "語たまっています" : "まだありません";
+  var gpt = gptTermIds().length;
+  $("mGpt").classList.toggle("hide", gpt === 0);
+  $("lbGpt").textContent = gpt + "語。モデル名・機能・設定・プラン";
+  var lrn = learnTermIds().length;
+  $("mLearn").classList.toggle("hide", lrn === 0);
+  $("lbLearn").textContent = lrn + "語。教師あり／なし・強化学習・評価の指標";
+  var hst = histTermIds().length;
+  $("mHist").classList.toggle("hide", hst === 0);
+  $("lbHist").textContent = hst + "語。チューリングテスト・中国語の部屋・3つのブーム";
+
+  var tcl = $("tchList"); tcl.innerHTML = "";
+  Object.keys(CHAPTERS).forEach(function (k) {
+    var ts = TERMS.filter(function (t) { return t.ch === Number(k); });
+    if (!ts.length) { return; }
+    var kn = ts.filter(function (t) { var s = DB.terms[t.id]; return s && s.c > 0 && !s.w; }).length;
+    var row = document.createElement("button");
+    row.className = "chrow";
+    row.style.cssText = "text-align:left;background:none;border:none;border-bottom:1px solid var(--line);width:100%;cursor:pointer;color:inherit;font-family:inherit";
+    row.innerHTML = '<span class="n">' + k + '</span>' +
+                    '<span class="t">' + CHAPTERS[k] + '</span>' +
+                    '<span class="g"><i style="width:' + Math.round(kn / ts.length * 100) + '%"></i></span>' +
+                    '<span class="p">' + kn + '/' + ts.length + '</span>';
+    row.onclick = function () { startTerms(ts.map(function (t) { return t.id; })); };
+    tcl.appendChild(row);
+  });
 }
+
+/* =====================================================================
+   単語帳（ver.2）
+   ---------------------------------------------------------------------
+   ・単語4択 … 用語→意味 / 意味→用語 をランダムに。誤答は「紛らわしい単語(near)」優先
+   ・説明できる？チェック … 意味を言ってからめくり、自己採点
+   ・問題とのひも付け … 単語の k（なければ w）が問題文・選択肢・解説に出てくれば、
+     その問題のキーワードとして扱う。問題を間違えると、キーワードが苦手な単語に入る
+   ===================================================================== */
+var TERM = {};
+TERMS.forEach(function (t) { TERM[t.id] = t; });
+
+var Q2T = {}, T2Q = {};
+(function linkTerms() {
+  var keys = [];
+  TERMS.forEach(function (t) {
+    (t.k || [t.w]).forEach(function (k) { if (k) { keys.push({ k: k, id: t.id }); } });
+  });
+  keys.sort(function (a, b) { return b.k.length - a.k.length; });   // 長い語から当てる
+  QUESTIONS.forEach(function (q) {
+    var text = q.q + "\n" + q.choices.join("\n") + "\n" + q.explain;
+    var hit = [];
+    keys.forEach(function (e) {
+      if (hit.indexOf(e.id) < 0 && text.indexOf(e.k) >= 0) { hit.push(e.id); }
+    });
+    Q2T[q.id] = hit.slice(0, 6);
+    Q2T[q.id].forEach(function (tid) { (T2Q[tid] = T2Q[tid] || []).push(q.id); });
+  });
+})();
+
+function weakTermIds() {
+  return TERMS.filter(function (t) { return DB.terms[t.id] && DB.terms[t.id].w; })
+              .map(function (t) { return t.id; });
+}
+function gptTermIds() {
+  return TERMS.filter(function (t) { return t.g; }).map(function (t) { return t.id; });
+}
+function histTermIds() {
+  return TERMS.filter(function (t) { return t.H; }).map(function (t) { return t.id; });
+}
+function learnTermIds() {
+  return TERMS.filter(function (t) { return t.L; }).map(function (t) { return t.id; });
+}
+function termNote(t) { return t.m + (t.tip ? "\n💡 " + t.tip : ""); }
+
+/* 4択の誤答を3つ選ぶ。紛らわしい単語 → 同じ章 → 全体 の順に、表示が重ならないものを */
+function pickDistractors(t, field) {
+  var out = [], seen = {};
+  seen[t[field]] = true;
+  function add(x) {
+    if (out.length < 3 && x && x.id !== t.id && !seen[x[field]]) { seen[x[field]] = true; out.push(x); }
+  }
+  shuffle((t.near || []).slice()).forEach(function (id) { add(TERM[id]); });
+  shuffle(TERMS.filter(function (x) { return x.ch === t.ch; })).forEach(add);
+  shuffle(TERMS.slice()).forEach(add);
+  return out;
+}
+
+/* 単語から、通常の問題と同じ形の「4択問題」を作る（id は "w:t101"） */
+var POOL = {};
+function makeTermQ(t) {
+  var w2m = Math.random() < 0.5;
+  var field = w2m ? "m" : "w";
+  var ds = pickDistractors(t, field);
+  return {
+    id: "w:" + t.id, tid: t.id, ch: t.ch,
+    q: w2m ? "「" + t.w + "」の意味として、正しいものはどれか。"
+           : t.m + "\n\n── これを表す用語はどれか。",
+    choices: [t[field]].concat(ds.map(function (d) { return d[field]; })),
+    answer: [0],
+    explain: "【" + t.w + "】\n" + termNote(t)
+  };
+}
+
+var kind = "q";   // "q" 問題 / "term" 単語4択 / "recall" 説明できる？
+function startTerms(tids, limit) {
+  POOL = {};
+  var ids = tids.map(function (tid) { var q = makeTermQ(TERM[tid]); POOL[q.id] = q; return q.id; });
+  start(ids, { limit: limit, kind: "term" });
+}
+
+/* 解説の下に出す「キーワード」「紛らわしい単語」のチップ。押すと意味が開く */
+function chipList(title, tids, note) {
+  var wrap = document.createElement("div"); wrap.className = "rel";
+  var h = document.createElement("div"); h.className = "rel-h"; h.textContent = title;
+  var row = document.createElement("div"); row.className = "kws";
+  var box = document.createElement("div"); box.className = "kwbox hide";
+  tids.forEach(function (tid) {
+    var t = TERM[tid]; if (!t) { return; }
+    var b = document.createElement("button");
+    b.className = "kw"; b.textContent = t.w;
+    b.onclick = function () {
+      var open = (box.getAttribute("data-id") === tid && !box.classList.contains("hide"));
+      Array.prototype.forEach.call(row.children, function (c) { c.classList.remove("on"); });
+      if (open) { box.classList.add("hide"); return; }
+      b.classList.add("on");
+      box.setAttribute("data-id", tid);
+      box.textContent = termNote(t);
+      box.classList.remove("hide");
+    };
+    row.appendChild(b);
+  });
+  if (!row.children.length) { return null; }
+  wrap.appendChild(h); wrap.appendChild(row); wrap.appendChild(box);
+  if (note) {
+    var n = document.createElement("div"); n.className = "rel-note"; n.textContent = note;
+    wrap.appendChild(n);
+  }
+  return wrap;
+}
+
+/* 単語 → その単語が出てくる問題へ */
+function goQuestionsBtn(tid) {
+  var qs = T2Q[tid] || [];
+  if (!qs.length) { return null; }
+  var b = document.createElement("button");
+  b.className = "rel-go";
+  b.textContent = "この単語が出てくる問題を解く（" + qs.length + "問）";
+  b.onclick = function () { start(qs.slice()); };
+  return b;
+}
+
+function renderRelated(box, q, hit) {
+  box.innerHTML = "";
+  var parts = [];
+  if (q.tid) {
+    parts.push(chipList("まぎらわしい単語（押すと意味が出ます）", TERM[q.tid].near || []));
+    parts.push(goQuestionsBtn(q.tid));
+  } else {
+    var tids = Q2T[q.id] || [];
+    parts.push(chipList("この問題のキーワード（押すと意味が出ます）", tids,
+      (!hit && tids.length) ? "→ この単語を「苦手な単語」に入れました" : ""));
+  }
+  parts.forEach(function (p) { if (p) { box.appendChild(p); } });
+}
+
+/* ---------- 説明できる？チェック ---------- */
+var rcQueue = [], rcIdx = 0;
+function startRecall(tids, limit) {
+  kind = "recall"; mode = "study";
+  rcQueue = shuffle(tids.slice());
+  if (limit && rcQueue.length > limit) { rcQueue = rcQueue.slice(0, limit); }
+  rcIdx = 0; sessionLog = [];
+  stopTimer();
+  show("recall");
+  renderRecall();
+}
+function renderRecall() {
+  var t = TERM[rcQueue[rcIdx]];
+  $("bar").style.width     = (rcIdx / rcQueue.length * 100) + "%";
+  $("rcCh").textContent    = "第" + t.ch + "章";
+  $("rcCount").textContent = (rcIdx + 1) + " / " + rcQueue.length;
+  $("rcWord").textContent  = t.w;
+  $("rcShow").classList.remove("hide");
+  $("rcHint").classList.remove("hide");
+  $("rcAns").classList.add("hide");
+  window.scrollTo(0, 0);
+}
+function recallAnswer(hit) {
+  var t = TERM[rcQueue[rcIdx]];
+  recordTerm(t.id, hit);
+  sessionLog.push({ id: t.id, tid: t.id, ch: t.ch, hit: hit });
+  if (rcIdx === rcQueue.length - 1) { finish(); } else { rcIdx++; renderRecall(); }
+}
+$("rcShow").onclick = function () {
+  var t = TERM[rcQueue[rcIdx]];
+  $("rcMean").textContent = termNote(t);
+  var box = $("rcRel"); box.innerHTML = "";
+  var c = chipList("まぎらわしい単語（違いも言えますか？）", t.near || []);
+  if (c) { box.appendChild(c); }
+  $("rcShow").classList.add("hide");
+  $("rcHint").classList.add("hide");
+  $("rcAns").classList.remove("hide");
+};
+$("rcOk").onclick = function () { recallAnswer(true); };
+$("rcNg").onclick = function () { recallAnswer(false); };
+
+/* ---------- 単語一覧・検索 ---------- */
+var glFilter = "all";
+function openGlossary() {
+  kind = "q"; mode = "study";
+  var tabs = [["all", "すべて"]];
+  Object.keys(CHAPTERS).forEach(function (k) { tabs.push([k, "第" + k + "章"]); });
+  if (learnTermIds().length) { tabs.push(["learn", "学習"]); }
+  if (histTermIds().length)  { tabs.push(["hist", "歴史"]); }
+  if (gptTermIds().length) { tabs.push(["gpt", "ChatGPT"]); }
+  tabs.push(["weak", "苦手"]);
+  var box = $("glTabs"); box.innerHTML = "";
+  tabs.forEach(function (tb) {
+    var b = document.createElement("button");
+    b.className = "gl-tab" + (glFilter === tb[0] ? " on" : "");
+    b.textContent = tb[1];
+    b.onclick = function () { glFilter = tb[0]; openGlossary(); };
+    box.appendChild(b);
+  });
+  renderGlossary();
+  show("glossary");
+}
+function renderGlossary() {
+  var q = $("glQ").value.trim();
+  var list = TERMS.filter(function (t) {
+    if (glFilter === "gpt" && !t.g) { return false; }
+    if (glFilter === "learn" && !t.L) { return false; }
+    if (glFilter === "hist" && !t.H)  { return false; }
+    if (glFilter === "weak" && !(DB.terms[t.id] && DB.terms[t.id].w)) { return false; }
+    if (/^\d$/.test(glFilter) && t.ch !== Number(glFilter)) { return false; }
+    if (q && (t.w + t.m + (t.tip || "")).indexOf(q) < 0) { return false; }
+    return true;
+  });
+  list.sort(function (a, b) { return a.ch - b.ch || (a.id < b.id ? -1 : 1); });
+  $("glCount").textContent = list.length + "語";
+  var box = $("glList"); box.innerHTML = "";
+  list.forEach(function (t) {
+    var s = DB.terms[t.id];
+    var d = document.createElement("div"); d.className = "gl-item";
+    var b = document.createElement("b"); b.textContent = t.w; d.appendChild(b);
+    var m = document.createElement("div"); m.className = "m"; m.textContent = t.m; d.appendChild(m);
+    if (t.tip) { var p = document.createElement("div"); p.className = "t"; p.textContent = "💡 " + t.tip; d.appendChild(p); }
+    var f = document.createElement("div"); f.className = "gl-foot";
+    var st = document.createElement("span");
+    if (s && s.w)          { st.className = "gl-weak"; st.textContent = "苦手"; }
+    else if (s && s.c > 0) { st.className = "gl-ok";   st.textContent = "覚えた"; }
+    f.appendChild(st);
+    var qs = T2Q[t.id] || [];
+    if (qs.length) {
+      var g = document.createElement("button"); g.className = "gl-q";
+      g.textContent = "関連する問題 " + qs.length + "問 ›";
+      g.onclick = function () { start(qs.slice()); };
+      f.appendChild(g);
+    }
+    d.appendChild(f);
+    box.appendChild(d);
+  });
+}
+$("glQ").oninput = renderGlossary;
 
 /* ---------- 出題 ----------
    mode "study" … 1問ずつ答え合わせ（10問・章別・復習）
@@ -403,6 +790,7 @@ function explainText(q) {
 function start(ids, opts) {
   opts = opts || {};
   mode = opts.exam ? "exam" : "study";
+  kind = opts.kind || "q";
   queue = shuffle(ids.slice());
   if (opts.limit && queue.length > opts.limit) { queue = queue.slice(0, opts.limit); }
   idx = 0;
@@ -416,7 +804,7 @@ function start(ids, opts) {
 }
 
 function currentQ() {
-  return QUESTIONS.filter(function (x) { return x.id === queue[idx]; })[0];
+  return POOL[queue[idx]] || QUESTIONS.filter(function (x) { return x.id === queue[idx]; })[0];
 }
 
 /* 選択状態を画面に反映する（本番形式では選び直せる） */
@@ -433,7 +821,7 @@ function renderQ() {
   picked = (mode === "exam" && answers[idx]) ? answers[idx].slice() : [];
 
   $("bar").style.width    = (idx / queue.length * 100) + "%";
-  $("qCh").textContent    = "第" + q.ch + "章";
+  $("qCh").textContent    = (q.tid ? "単語・" : "") + "第" + q.ch + "章";
   $("qCount").textContent = (idx + 1) + " / " + queue.length;
   $("qText").textContent  = q.q;
 
@@ -536,53 +924,40 @@ function grade(q) {
   }
 
   record(q, hit);
-  sessionLog.push({ id: q.id, ch: q.ch, hit: hit });
+  sessionLog.push({ id: q.id, tid: q.tid, ch: q.ch, hit: hit });
 
   $("submit").classList.add("hide");
   $("judge").className     = "judge " + (hit ? "y" : "n");
   $("judge").textContent   = hit ? "○　正解" : "×　不正解";
   $("explain").textContent = explainText(q);
+  renderRelated($("related"), q, hit);
   $("next").textContent    = (idx === queue.length - 1) ? "結果を見る" : "次の問題へ";
   $("result").classList.remove("hide");
   $("result").scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
-/* 成績の記録（1問ぶん） */
+/* 成績の記録（1問ぶん）。単語4択なら単語の成績に入れる */
 function record(q, hit) {
+  if (q.tid) { recordTerm(q.tid, hit); return; }
   var s = DB.stats[q.id] || { n: 0, c: 0, w: false };
   s.n++; if (hit) { s.c++; }
   s.w = !hit;                       // 直近で間違えた問題を「苦手」として残す
   DB.stats[q.id] = s;
+  /* 問題を間違えたら、その問題のキーワードを苦手な単語に入れる（単語で固めてから戻る） */
+  if (!hit) {
+    (Q2T[q.id] || []).forEach(function (tid) {
+      var t = DB.terms[tid] || { n: 0, c: 0, w: false };
+      t.w = true; DB.terms[tid] = t;
+    });
+  }
   save();
 }
-
-function grade(q) {
-  locked = true;
-  var ans  = q.answer.slice().sort().join(",");
-  var mine = picked.slice().sort().join(",");
-  var hit  = (ans === mine);
-
-  var kids = $("qChoices").children, ord = orderFor(q);
-  for (var i = 0; i < kids.length; i++) {
-    kids[i].classList.add("locked");
-    kids[i].classList.remove("sel");
-    if (q.answer.indexOf(ord[i]) >= 0) { kids[i].classList.add("ok"); }
-    else if (picked.indexOf(ord[i]) >= 0) { kids[i].classList.add("ng"); }
-  }
-
-  var s = DB.stats[q.id] || { n: 0, c: 0, w: false };
+function recordTerm(tid, hit) {
+  var s = DB.terms[tid] || { n: 0, c: 0, w: false };
   s.n++; if (hit) { s.c++; }
-  s.w = !hit;                       // 直近で間違えた問題を「苦手」として残す
-  DB.stats[q.id] = s; save();
-  sessionLog.push({ id: q.id, ch: q.ch, hit: hit });
-
-  $("submit").classList.add("hide");
-  $("judge").className     = "judge " + (hit ? "y" : "n");
-  $("judge").textContent   = hit ? "○　正解" : "×　不正解";
-  $("explain").textContent = explainText(q);
-  $("next").textContent    = (idx === queue.length - 1) ? "結果を見る" : "次の問題へ";
-  $("result").classList.remove("hide");
-  $("result").scrollIntoView({ behavior: "smooth", block: "nearest" });
+  s.w = !hit;
+  DB.terms[tid] = s;
+  save();
 }
 
 /* ---------- 結果 ---------- */
@@ -640,9 +1015,15 @@ function finish() {
   });
 
   var missed = sessionLog.filter(function (r) { return !r.hit; })
-                         .map(function (r) { return r.id; });
+                         .map(function (r) { return r.tid || r.id; });
+  var was = kind;
   $("againWeak").classList.toggle("hide", missed.length === 0);
-  $("againWeak").onclick = function () { start(missed); };
+  $("againWeak").textContent = (was === "q") ? "間違えた問題を見直す" : "できなかった単語をもう一度";
+  $("againWeak").onclick = function () {
+    if (was === "recall")    { startRecall(missed); }
+    else if (was === "term") { startTerms(missed); }
+    else                     { start(missed); }
+  };
   show("done");
 }
 
@@ -652,7 +1033,15 @@ var allIds = function () { return QUESTIONS.map(function (q) { return q.id; }); 
 Array.prototype.forEach.call(document.querySelectorAll(".mode"), function (b) {
   b.onclick = function () {
     var m = b.getAttribute("data-mode");
-    if (m === "exam") {
+    var allT = TERMS.map(function (t) { return t.id; });
+    if (m === "w-quick")       { startTerms(allT, QUICK_N); }
+    else if (m === "w-recall") { startRecall(weakTermIds().concat(shuffle(allT)).filter(function (id, i, a) { return a.indexOf(id) === i; }).slice(0, QUICK_N)); }
+    else if (m === "w-weak")   { var wt = weakTermIds(); if (wt.length) { startTerms(wt); } }
+    else if (m === "w-gpt")    { startTerms(gptTermIds(), 15); }
+    else if (m === "w-learn")  { startTerms(learnTermIds(), 15); }
+    else if (m === "w-hist")   { startTerms(histTermIds(), 15); }
+    else if (m === "w-list")   { openGlossary(); }
+    else if (m === "exam") {
       start(allIds(), { exam: true, limit: EXAM_N });
     } else if (m === "quick") {
       start(allIds(), { limit: QUICK_N });
@@ -686,7 +1075,7 @@ $("back").onclick = function () {
 $("toHome").onclick = quitQuiz;
 $("reset").onclick  = function () {
   if (!confirm("これまでの成績をすべて消します。よろしいですか？")) { return; }
-  DB = { stats: {} }; save(); renderHome();
+  DB = { stats: {}, terms: {} }; save(); renderHome();
 };
 
 applyEdition();
